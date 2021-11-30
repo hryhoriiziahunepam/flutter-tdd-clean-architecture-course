@@ -8,23 +8,25 @@ import 'package:clean_architecture_tdd_course/features/number_trivia/data/reposi
 import 'package:clean_architecture_tdd_course/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-class MockRemoteDataSource extends Mock implements NumberTriviaRemoteDataSource {}
+import 'number_trivia_repository_impl_test.mocks.dart';
 
-class MockLocalDataSource extends Mock implements NumberTriviaLocalDataSource {}
-
-class MockNetworkInfo extends Mock implements NetworkInfo {}
-
+@GenerateMocks([
+  NumberTriviaRemoteDataSource,
+  NumberTriviaLocalDataSource,
+  NetworkInfo,
+])
 void main() {
   late NumberTriviaRepositoryImpl repository;
-  late MockRemoteDataSource mockRemoteDataSource;
-  late MockLocalDataSource mockLocalDataSource;
+  late MockNumberTriviaRemoteDataSource mockRemoteDataSource;
+  late MockNumberTriviaLocalDataSource mockLocalDataSource;
   late MockNetworkInfo mockNetworkInfo;
 
   setUp(() {
-    mockRemoteDataSource = MockRemoteDataSource();
-    mockLocalDataSource = MockLocalDataSource();
+    mockRemoteDataSource = MockNumberTriviaRemoteDataSource();
+    mockLocalDataSource = MockNumberTriviaLocalDataSource();
     mockNetworkInfo = MockNetworkInfo();
     repository = NumberTriviaRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
@@ -55,8 +57,8 @@ void main() {
 
   group('getConcreteNumberTrivia', () {
     const tNumber = 1;
-    final tNumberTriviaModel = NumberTriviaModel(number: tNumber, text: 'test trivia');
-    final NumberTrivia tNumberTrivia = tNumberTriviaModel;
+    const tNumberTriviaModel = NumberTriviaModel(number: tNumber, text: 'test trivia');
+    const NumberTrivia tNumberTrivia = tNumberTriviaModel;
 
     test(
       'should check if the device is online',
@@ -81,7 +83,7 @@ void main() {
           final result = await repository.getConcreteNumberTrivia(tNumber);
           // assert
           verify(mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(const Right(tNumberTrivia)));
         },
       );
 
@@ -126,7 +128,7 @@ void main() {
           // assert
           verifyZeroInteractions(mockRemoteDataSource);
           verify(mockLocalDataSource.getLastNumberTrivia());
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(const Right(tNumberTrivia)));
         },
       );
 
@@ -147,8 +149,8 @@ void main() {
   });
 
   group('getRandomNumberTrivia', () {
-    final tNumberTriviaModel = NumberTriviaModel(number: 123, text: 'test trivia');
-    final NumberTrivia tNumberTrivia = tNumberTriviaModel;
+    const tNumberTriviaModel = NumberTriviaModel(number: 123, text: 'test trivia');
+    const NumberTrivia tNumberTrivia = tNumberTriviaModel;
 
     test(
       'should check if the device is online',
@@ -173,7 +175,7 @@ void main() {
           final result = await repository.getRandomNumberTrivia();
           // assert
           verify(mockRemoteDataSource.getRandomNumberTrivia());
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(const Right(tNumberTrivia)));
         },
       );
 
@@ -218,7 +220,7 @@ void main() {
           // assert
           verifyZeroInteractions(mockRemoteDataSource);
           verify(mockLocalDataSource.getLastNumberTrivia());
-          expect(result, equals(Right(tNumberTrivia)));
+          expect(result, equals(const Right(tNumberTrivia)));
         },
       );
 

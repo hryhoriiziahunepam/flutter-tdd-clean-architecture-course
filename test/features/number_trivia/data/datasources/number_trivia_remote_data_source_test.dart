@@ -6,12 +6,13 @@ import 'package:clean_architecture_tdd_course/features/number_trivia/data/models
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:matcher/matcher.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
+import 'number_trivia_remote_data_source_test.mocks.dart';
 
-class MockHttpClient extends Mock implements http.Client {}
-
+@GenerateMocks([], customMocks: [MockSpec<http.Client>(as: #MockHttpClient)])
 void main() {
   late NumberTriviaRemoteDataSourceImpl dataSource;
   late MockHttpClient mockHttpClient;
@@ -22,12 +23,12 @@ void main() {
   });
 
   void setUpMockHttpClientSuccess200() {
-    when(mockHttpClient.get(Uri.parse(any ?? ''), headers: anyNamed('headers')))
+    when(mockHttpClient.get(any, headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
   }
 
   void setUpMockHttpClientFailure404() {
-    when(mockHttpClient.get(Uri.parse(any ?? ''), headers: anyNamed('headers')))
+    when(mockHttpClient.get(any, headers: anyNamed('headers')))
         .thenAnswer((_) async => http.Response('Something went wrong', 404));
   }
 

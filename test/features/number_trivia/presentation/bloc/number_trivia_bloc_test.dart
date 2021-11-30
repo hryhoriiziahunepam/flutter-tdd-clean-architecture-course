@@ -7,14 +7,18 @@ import 'package:clean_architecture_tdd_course/features/number_trivia/domain/usec
 import 'package:clean_architecture_tdd_course/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-class MockGetConcreteNumberTrivia extends Mock implements GetConcreteNumberTrivia {}
+import 'number_trivia_bloc_test.mocks.dart';
 
-class MockGetRandomNumberTrivia extends Mock implements GetRandomNumberTrivia {}
-
-class MockInputConverter extends Mock implements InputConverter {}
-
+@GenerateMocks(
+  [
+    GetConcreteNumberTrivia,
+    GetRandomNumberTrivia,
+    InputConverter,
+  ],
+)
 void main() {
   late NumberTriviaBloc bloc;
   late MockGetConcreteNumberTrivia mockGetConcreteNumberTrivia;
@@ -82,11 +86,10 @@ void main() {
       () async {
         // arrange
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(Params(number: any ?? 0)))
-            .thenAnswer((_) async => const Right(tNumberTrivia));
+        when(mockGetConcreteNumberTrivia(any)).thenAnswer((_) async => const Right(tNumberTrivia));
         // act
         bloc.add(const NumberTriviaEvent.getTriviaForConcreteNumber(tNumberString));
-        await untilCalled(mockGetConcreteNumberTrivia(Params(number: any ?? 0)));
+        await untilCalled(mockGetConcreteNumberTrivia(any));
         // assert
         verify(mockGetConcreteNumberTrivia(const Params(number: tNumberParsed)));
       },
@@ -97,8 +100,7 @@ void main() {
       () async {
         // arrange
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(Params(number: any ?? 0)))
-            .thenAnswer((_) async => const Right(tNumberTrivia));
+        when(mockGetConcreteNumberTrivia(any)).thenAnswer((_) async => const Right(tNumberTrivia));
         // assert later
         final expected = [
           const NumberTriviaState.empty(),
@@ -116,8 +118,7 @@ void main() {
       () async {
         // arrange
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(Params(number: any ?? 0)))
-            .thenAnswer((_) async => Left(ServerFailure()));
+        when(mockGetConcreteNumberTrivia(any)).thenAnswer((_) async => Left(ServerFailure()));
         // assert later
         final expected = [
           const NumberTriviaState.empty(),
@@ -135,8 +136,7 @@ void main() {
       () async {
         // arrange
         setUpMockInputConverterSuccess();
-        when(mockGetConcreteNumberTrivia(Params(number: any ?? 0)))
-            .thenAnswer((_) async => Left(CacheFailure()));
+        when(mockGetConcreteNumberTrivia(any)).thenAnswer((_) async => Left(CacheFailure()));
         // assert later
         final expected = [
           const NumberTriviaState.empty(),

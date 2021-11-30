@@ -5,13 +5,14 @@ import 'package:clean_architecture_tdd_course/features/number_trivia/data/dataso
 import 'package:clean_architecture_tdd_course/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:matcher/matcher.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
+import 'number_trivia_local_data_source_test.mocks.dart';
 
-class MockSharedPreferences extends Mock implements SharedPreferences {}
-
+@GenerateMocks([SharedPreferences])
 void main() {
   late NumberTriviaLocalDataSourceImpl dataSource;
   late MockSharedPreferences mockSharedPreferences;
