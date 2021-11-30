@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  InputConverter inputConverter;
+  late InputConverter inputConverter;
 
   setUp(() {
     inputConverter = InputConverter();
@@ -14,11 +14,11 @@ void main() {
       'should return an integer when the string represents an unsigned integer',
       () async {
         // arrange
-        final str = '123';
+        const str = '123';
         // act
         final result = inputConverter.stringToUnsignedInteger(str);
         // assert
-        expect(result, Right(123));
+        expect(result, const Right(123));
       },
     );
 
@@ -26,7 +26,7 @@ void main() {
       'should return a Failure when the string is not an integer',
       () async {
         // arrange
-        final str = 'abc';
+        const str = 'abc';
         // act
         final result = inputConverter.stringToUnsignedInteger(str);
         // assert
@@ -38,7 +38,7 @@ void main() {
       'should return a Failure when the string is a negative integer',
       () async {
         // arrange
-        final str = '-123';
+        const str = '-123';
         // act
         final result = inputConverter.stringToUnsignedInteger(str);
         // assert

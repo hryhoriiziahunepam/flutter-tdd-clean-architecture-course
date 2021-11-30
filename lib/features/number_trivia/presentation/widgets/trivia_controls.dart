@@ -1,10 +1,10 @@
-import 'package:clean_architecture_tdd_course/features/number_trivia/presentation/bloc/bloc.dart';
+import 'package:clean_architecture_tdd_course/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TriviaControls extends StatefulWidget {
   const TriviaControls({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -13,7 +13,7 @@ class TriviaControls extends StatefulWidget {
 
 class _TriviaControlsState extends State<TriviaControls> {
   final controller = TextEditingController();
-  String inputStr;
+  late String inputStr;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _TriviaControlsState extends State<TriviaControls> {
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: OutlineInputBorder(),
             hintText: 'Input a number',
           ),
@@ -33,21 +33,21 @@ class _TriviaControlsState extends State<TriviaControls> {
             dispatchConcrete();
           },
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Row(
           children: <Widget>[
             Expanded(
               child: RaisedButton(
-                child: Text('Search'),
+                child: const Text('Search'),
                 color: Theme.of(context).accentColor,
                 textTheme: ButtonTextTheme.primary,
                 onPressed: dispatchConcrete,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: RaisedButton(
-                child: Text('Get random trivia'),
+                child: const Text('Get random trivia'),
                 onPressed: dispatchRandom,
               ),
             ),
@@ -60,11 +60,12 @@ class _TriviaControlsState extends State<TriviaControls> {
   void dispatchConcrete() {
     controller.clear();
     BlocProvider.of<NumberTriviaBloc>(context)
-        .add(GetTriviaForConcreteNumber(inputStr));
+        .add(NumberTriviaEvent.getTriviaForConcreteNumber(inputStr));
   }
 
   void dispatchRandom() {
     controller.clear();
-    BlocProvider.of<NumberTriviaBloc>(context).add(GetTriviaForRandomNumber());
+    BlocProvider.of<NumberTriviaBloc>(context)
+        .add(const NumberTriviaEvent.getTriviaForRandomNumber());
   }
 }
