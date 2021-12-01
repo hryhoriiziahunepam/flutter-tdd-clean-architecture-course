@@ -14,9 +14,13 @@ import 'package:mockito/mockito.dart';
 import 'number_trivia_repository_impl_test.mocks.dart';
 
 @GenerateMocks([
-  NumberTriviaRemoteDataSource,
   NumberTriviaLocalDataSource,
   NetworkInfo,
+], customMocks: [
+  MockSpec<NumberTriviaRemoteDataSource>(
+    as: #MockNumberTriviaRemoteDataSource,
+    returnNullOnMissingStub: true,
+  ),
 ])
 void main() {
   late NumberTriviaRepositoryImpl repository;
@@ -77,7 +81,7 @@ void main() {
         'should return remote data when the call to remote data source is successful',
         () async {
           // arrange
-          when(mockRemoteDataSource.getConcreteNumberTrivia(any ?? 0))
+          when(mockRemoteDataSource.getConcreteNumberTrivia(any))
               .thenAnswer((_) async => tNumberTriviaModel);
           // act
           final result = await repository.getConcreteNumberTrivia(tNumber);
@@ -91,7 +95,7 @@ void main() {
         'should cache the data locally when the call to remote data source is successful',
         () async {
           // arrange
-          when(mockRemoteDataSource.getConcreteNumberTrivia(any ?? 0))
+          when(mockRemoteDataSource.getConcreteNumberTrivia(any))
               .thenAnswer((_) async => tNumberTriviaModel);
           // act
           await repository.getConcreteNumberTrivia(tNumber);
@@ -105,7 +109,7 @@ void main() {
         'should return server failure when the call to remote data source is unsuccessful',
         () async {
           // arrange
-          when(mockRemoteDataSource.getConcreteNumberTrivia(any ?? 0)).thenThrow(ServerException());
+          when(mockRemoteDataSource.getConcreteNumberTrivia(any)).thenThrow(ServerException());
           // act
           final result = await repository.getConcreteNumberTrivia(tNumber);
           // assert

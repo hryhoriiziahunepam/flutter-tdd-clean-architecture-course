@@ -5,6 +5,7 @@ import 'package:clean_architecture_tdd_course/core/error/failures.dart';
 import 'package:clean_architecture_tdd_course/core/usecases/usecase.dart';
 import 'package:clean_architecture_tdd_course/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
 
@@ -64,13 +65,13 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   }
 
   Future<void> _handleGetTriviaForConcreteNumber(String numberString) async {
-    final inputEither = inputConverter.stringToUnsignedInteger(numberString);
-
+    final Either<Failure, int> inputEither = inputConverter.stringToUnsignedInteger(numberString);
     inputEither.fold(
       (failure) => _emit(const NumberTriviaState.error(INVALID_INPUT_FAILURE_MESSAGE)),
       (integer) async {
         _emit(const NumberTriviaState.loading());
-        final failureOrTrivia = await getConcreteNumberTrivia(Params(number: integer));
+        final Either<Failure, NumberTrivia> failureOrTrivia =
+            await getConcreteNumberTrivia.call(Params(number: integer));
         _eitherLoadedOrErrorState(failureOrTrivia);
       },
     );
@@ -78,7 +79,8 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
 
   Future<void> _handleGetTriviaForRandomNumber() async {
     _emit(const NumberTriviaState.loading());
-    final failureOrTrivia = await getRandomNumberTrivia(NoParams());
+    final Either<Failure, NumberTrivia> failureOrTrivia =
+        await getRandomNumberTrivia.call(NoParams());
     _eitherLoadedOrErrorState(failureOrTrivia);
   }
 

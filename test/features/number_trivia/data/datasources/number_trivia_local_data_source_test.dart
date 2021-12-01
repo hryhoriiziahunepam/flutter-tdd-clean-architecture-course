@@ -12,7 +12,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../fixtures/fixture_reader.dart';
 import 'number_trivia_local_data_source_test.mocks.dart';
 
-@GenerateMocks([SharedPreferences])
+@GenerateMocks([], customMocks: [
+  MockSpec<SharedPreferences>(
+    as: #MockSharedPreferences,
+    returnNullOnMissingStub: true,
+  ),
+])
 void main() {
   late NumberTriviaLocalDataSourceImpl dataSource;
   late MockSharedPreferences mockSharedPreferences;
@@ -32,7 +37,7 @@ void main() {
       'should return NumberTrivia from SharedPreferences when there is one in the cache',
       () async {
         // arrange
-        when(mockSharedPreferences.getString(any ?? '')).thenReturn(fixture('trivia_cached.json'));
+        when(mockSharedPreferences.getString(any)).thenReturn(fixture('trivia_cached.json'));
         // act
         final result = await dataSource.getLastNumberTrivia();
         // assert
@@ -45,7 +50,7 @@ void main() {
       'should throw a CacheExeption when there is not a cached value',
       () async {
         // arrange
-        when(mockSharedPreferences.getString(any ?? '')).thenReturn(null);
+        when(mockSharedPreferences.getString(any)).thenReturn(null);
         // act
         final call = dataSource.getLastNumberTrivia;
         // assert
@@ -55,7 +60,7 @@ void main() {
   });
 
   group('cacheNumberTrivia', () {
-    final tNumberTriviaModel = NumberTriviaModel(number: 1, text: 'test trivia');
+    final tNumberTriviaModel = const NumberTriviaModel(number: 1, text: 'test trivia');
 
     test(
       'should call SharedPreferences to cache the data',
